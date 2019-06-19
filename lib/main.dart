@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pokemon_flutter/model/move.dart';
-import 'package:pokemon_flutter/model/pokemon.dart';
-import 'package:pokemon_flutter/model/pokemon_repository_local.dart';
+import 'package:http/http.dart' as http;
+
+import 'data/model/move.dart';
+import 'data/model/pokemon.dart';
+import 'data/repository/pokemon_repository_local.dart';
+import 'data/repository/pokemon_repository.dart';
 
 void main() {
   runApp(PokemonApp());
@@ -15,25 +18,22 @@ class PokemonApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: PokemonPage(title: 'Pokémon'),
+      home: PokemonPage(title: 'Pokémon', future: PokemonRepositoryLocal.getPokemons()),
     );
   }
 }
 
-class PokemonPage extends StatefulWidget {
-  PokemonPage({Key key, this.title}) : super(key: key);
+class PokemonPage extends StatelessWidget {
+
+  PokemonPage({this.title, this.future});
   final String title;
-
-  @override
-  _PokemonPageState createState() => _PokemonPageState();
-}
-
-class _PokemonPageState extends State<PokemonPage> {
+  final Future<List<Pokemon>> future;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Pokémon'),
       ),
       body: FutureBuilder(
         future: PokemonRepositoryLocal.getPokemons(),
@@ -111,15 +111,11 @@ class PokemonDetail extends StatelessWidget {
             Expanded(
               flex: 1,
               child: FutureBuilder(
-                future: PokemonRepositoryLocal.getMoveById(),
+                future: PokemonRepositoryLocal.getHabitatById(),
                 builder:
-                    (BuildContext context, AsyncSnapshot<List<Move>> snapshot) {
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
                   if (snapshot.hasData) {
-                    return ListView(
-                      children: snapshot.data
-                          .map((move) => ListTile(title: Text(move.name)))
-                          .toList(),
-                    );
+                    return ListTile(title: Text(snapshot.data));
                   }
                   return Center(child: CircularProgressIndicator());
                 },

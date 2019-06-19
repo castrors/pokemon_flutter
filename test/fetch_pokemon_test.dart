@@ -1,9 +1,10 @@
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import 'package:pokemon_flutter/model/pokemon.dart';
-import 'package:pokemon_flutter/model/pokemon_repository.dart';
+
 import 'package:test_api/test_api.dart';
 
+import '../lib/data/model/pokemon.dart';
+import '../lib/data/repository/pokemon_repository.dart';
 import 'fixtures/get_pokemon.dart';
 
 class MockClient extends Mock implements http.Client {}

@@ -1,7 +1,9 @@
-import 'package:pokemon_flutter/model/move.dart';
-import 'package:pokemon_flutter/model/pokemon.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import '../model/move.dart';
+import '../model/pokemon.dart';
 
 class PokemonRepository {
   static Future<List<Pokemon>> getPokemons(http.Client client) async {
@@ -24,5 +26,15 @@ class PokemonRepository {
 
     final data = json.decode(response.body)['moves'] as List;
     return data.map((rawMove) => Move.fromJson(rawMove)).toList();
+  }
+
+  static Future<List<String>> getHabitatById(http.Client client, int id) async {
+    final response = await client.get('https://pokeapi.co/api/v2/pokemon-habitat/$id/');
+
+    if (response.statusCode != 200) {
+      throw Exception('error getting habitat');
+    }
+
+    return [json.decode(response.body)['name']];
   }
 }
